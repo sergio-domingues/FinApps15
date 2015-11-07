@@ -20,6 +20,10 @@
             android:name=".ViewModel"
             android:label="@string/title_activity_view_model" >
         </activity>
+        <activity
+            android:name=".PurchaseModel"
+            android:label="@string/title_activity_purchase_model" >
+        </activity>
     </application>
 
 </manifest>

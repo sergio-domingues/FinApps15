@@ -1,14 +1,21 @@
 package coderdudos.printdonation;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 public class ViewModel extends AppCompatActivity {
+
+
+    private int id;
+    private String name;
+    private float price;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,15 +23,27 @@ public class ViewModel extends AppCompatActivity {
         setContentView(R.layout.activity_view_model);
 
         Bundle b = getIntent().getExtras();
-        int id = b.getInt("id");
-        String name = b.getString("name");
-        float price = b.getFloat("price");
+        id = b.getInt("id");
+        name = b.getString("name");
+        price = b.getFloat("price");
 
         TextView modelName = (TextView) findViewById(R.id.model_name);
         modelName.setText(name + "");
 
         Button purchaseButton = (Button) findViewById(R.id.purchaseModelbutton);
         purchaseButton.setText(price + "€");
+        purchaseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getLayoutInflater().getContext(), PurchaseModel.class);
+                Bundle b = new Bundle();
+                b.putLong("id", id);
+                b.putString("name", name);
+                b.putFloat("price", price);
+                intent.putExtras(b);
+                startActivity(intent);
+            }
+        });
 
 
     }
