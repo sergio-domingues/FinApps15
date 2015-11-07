@@ -7,7 +7,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.widget.ImageView;
 
-import coderdudos.printdonation.connection.request.ModelPhotos;
+import coderdudos.printdonation.connection.request.ModelIcon;
 import coderdudos.printdonation.connection.request.Request;
 
 public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
@@ -27,12 +27,13 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 
     synchronized protected Bitmap doInBackground(String... urls) {
         String urldisplay = urls[0];
+        Log.d("Image load", urldisplay);
         Request request = new Request(urldisplay);
         Bitmap mIcon11 = null;
 
         try {
             Connection.getInstance().send(request);
-            ModelPhotos model = (ModelPhotos) Connection.getInstance().read();
+            ModelIcon model = (ModelIcon) Connection.getInstance().read();
             byte[] base64converted = Base64.decode(model.getImg(), Base64.DEFAULT);
             mIcon11=BitmapFactory.decodeByteArray(base64converted,0,base64converted.length);
         } catch (Exception e) {
