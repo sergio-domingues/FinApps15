@@ -1,7 +1,9 @@
 package coderdudos.printdonation.connection;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -20,19 +22,21 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         this.image = image;
     }
 
-    protected Bitmap doInBackground(String... urls) {
+    synchronized protected Bitmap doInBackground(String... urls) {
         String urldisplay = urls[0];
         Bitmap mIcon11 = null;
         try {
-            //TODO
-            /*InputStream in = new java.net.URL(urldisplay).openStream();
-            mIcon11 = BitmapFactory.decodeStream(in);*/
+            Connection.getInstance().send(urldisplay);
+            byte[] base64converted = Base64.decode((String) Connection.getInstance().read(), Base64.DEFAULT);
+            mIcon11=BitmapFactory.decodeByteArray(base64converted,0,base64converted.length);
         } catch (Exception e) {
             Log.e("Error", e.getMessage());
             e.printStackTrace();
         }
         return mIcon11;
     }
+
+
 
     public ImageView getBmImage() {
         return bmImage;

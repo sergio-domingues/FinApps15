@@ -5,7 +5,7 @@ public class Request {
     private int id;
 
     public Request() {
-        this.requestType = type.geral;
+        this.requestType = type.info;
         this.id = -1;
     }
 
@@ -30,9 +30,10 @@ public class Request {
         this.id = id;
     }
 
-    private static enum type {
-        geral,
-        detailed,
+    private enum type {
+        info,
+        icon,
+        photos,
         stl
     }
 

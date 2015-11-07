@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import coderdudos.printdonation.R;
-import coderdudos.printdonation.connection.Connection;
+import coderdudos.printdonation.connection.DownloadImage;
 import coderdudos.printdonation.connection.StoredBmp;
 
 public class ModelAdapter extends BaseAdapter {
@@ -112,7 +112,7 @@ public class ModelAdapter extends BaseAdapter {
         if(modelData.getImage().bmp != null){
             image.setImageBitmap(modelData.getImage().bmp);
         }else{
-            Connection.getInstance().downloadImage(image,row, modelData.getModelID(), modelData.getImage());
+            DownloadImage.downloadImage(image, row, modelData.getModelID(), modelData.getImage());
         }
 
 
