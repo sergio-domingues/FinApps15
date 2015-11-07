@@ -1,5 +1,7 @@
 package coderdudos.printdonation.connection;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -23,14 +25,20 @@ public class Connection extends Observable{
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    clientSocket = new Socket("172.16.2.231", PORT);
-                    outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
-                    inFromServer = new ObjectInputStream(clientSocket.getInputStream());
-                    setChanged();
-                    notifyObservers(ConnectionMessages.CONNECTED.toString());
-                } catch (IOException e) {
-                    e.printStackTrace();
+                while (true){
+                    try {
+                        clientSocket = new Socket("172.16.2.231", PORT);
+                        Log.d("Establishing Connection", "Socket created in address "+ clientSocket.getInetAddress() + " port" + clientSocket.getPort() ) ;
+                        outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
+                        Log.d("Establishing Connection", "OutputStream created");
+                        inFromServer = new ObjectInputStream(clientSocket.getInputStream());
+                        Log.d("Establishing Connection", "InputStream created");
+                        setChanged();
+                        notifyObservers(ConnectionMessages.CONNECTED.toString());
+                        break;
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }).start();
@@ -47,7 +55,7 @@ public class Connection extends Observable{
     public Object read(){
         try {
             return inFromServer.readObject();
-        } catch (ClassNotFoundException | IOException e) {
+        } catch (ClassNotFoundException |  IOException e) {
             e.printStackTrace();
         }
         return null;

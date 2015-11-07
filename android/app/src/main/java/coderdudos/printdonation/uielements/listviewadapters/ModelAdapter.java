@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ import coderdudos.printdonation.R;
 import coderdudos.printdonation.connection.DownloadImage;
 import coderdudos.printdonation.connection.StoredBmp;
 
-public class ModelAdapter extends BaseAdapter {
+public class ModelAdapter extends BaseAdapter implements Serializable {
 
     private Context context;
     private List<ModelData> data;
@@ -23,25 +24,14 @@ public class ModelAdapter extends BaseAdapter {
 
     public static class ModelData{
         private StoredBmp image;
-        private int modelID;
         private String modelName;
 
         private float price;
 
-        public ModelData(int modelID, String modelName, float price){
-            this.modelID = modelID;
+        public ModelData(String modelName, float price){
             this.modelName = modelName;
             this.price = price;
             this.image = new StoredBmp(null);
-        }
-
-
-        public int getModelID() {
-            return modelID;
-        }
-
-        public void setModelID(int modelID) {
-            this.modelID = modelID;
         }
 
         public String getModelName() {
@@ -73,7 +63,7 @@ public class ModelAdapter extends BaseAdapter {
         this.context = context;
         this.data = new ArrayList<>();
         for(int i = 0; i < 20; i++){
-            this.data.add(new ModelData(i,i+1+"",i*10));
+            this.data.add(new ModelData(i+1+"",i*10));
         }
     }
 
@@ -97,7 +87,7 @@ public class ModelAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return data.get(position).getModelID();
+        return position;
     }
 
     @Override
@@ -112,8 +102,8 @@ public class ModelAdapter extends BaseAdapter {
         if(modelData.getImage().bmp != null){
             image.setImageBitmap(modelData.getImage().bmp);
         }else{
-            DownloadImage.downloadImage(image, row, modelData.getModelID(), modelData.getImage());
-        }
+            DownloadImage.downloadImage(image, row, modelData.getModelName(), modelData.getImage());
+    }
 
 
         TextView name = (TextView) row.findViewById(R.id.model_name);
