@@ -27,7 +27,7 @@ public class Connection extends Observable{
             public void run() {
                 while (true){
                     try {
-                        clientSocket = new Socket("172.16.2.231", PORT);
+                        clientSocket = new Socket("192.168.42.1", PORT);
                         Log.d("Establishing Connection", "Socket created in address "+ clientSocket.getInetAddress() + " port" + clientSocket.getPort() ) ;
                         outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
                         Log.d("Establishing Connection", "OutputStream created");

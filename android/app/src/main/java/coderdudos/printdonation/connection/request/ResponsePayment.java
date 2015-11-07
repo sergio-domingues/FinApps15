@@ -1,11 +1,12 @@
 package coderdudos.printdonation.connection.request;
 
+
 public class ResponsePayment extends Model {
 	
-	String description = "Payment done successfuly\nStarted printing now\nClosing connection with user";
+	String description = "Payment done successfuly.Started printing now.Closing connection with user.";
 	
 	public ResponsePayment(String name){
-		super();		
+		super();
 	}
 
 	public String getDescription() {
