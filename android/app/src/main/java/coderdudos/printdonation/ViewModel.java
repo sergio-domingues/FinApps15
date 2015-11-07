@@ -7,8 +7,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import coderdudos.printdonation.connection.DownloadPhoto;
+import coderdudos.printdonation.connection.StoredBmp;
 
 public class ViewModel extends AppCompatActivity {
 
@@ -29,6 +34,24 @@ public class ViewModel extends AppCompatActivity {
 
         TextView modelName = (TextView) findViewById(R.id.model_name);
         modelName.setText(name + "");
+
+        ImageView image = (ImageView) findViewById(R.id.imageView);
+        ImageView image2 = (ImageView) findViewById(R.id.imageView2);
+        ImageView image3 = (ImageView) findViewById(R.id.imageView3);
+        ImageView image4 = (ImageView) findViewById(R.id.imageView4);
+
+        StoredBmp bmp1 = new StoredBmp(null);
+        StoredBmp bmp2 = new StoredBmp(null);
+        StoredBmp bmp3 = new StoredBmp(null);
+        StoredBmp bmp4 = new StoredBmp(null);
+
+        final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) this
+                .findViewById(android.R.id.content)).getChildAt(0);
+        DownloadPhoto.downloadPhoto(image, viewGroup, name + "0", bmp1);
+        DownloadPhoto.downloadPhoto(image2, viewGroup, name + "1", bmp2);
+        DownloadPhoto.downloadPhoto(image3, viewGroup, name + "2", bmp3);
+        DownloadPhoto.downloadPhoto(image4, viewGroup, name + "3", bmp4);
+
 
         Button purchaseButton = (Button) findViewById(R.id.purchaseModelbutton);
         purchaseButton.setText(price + "€");

@@ -1,9 +1,12 @@
 package coderdudos.printdonation;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,18 +14,36 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 
+import coderdudos.printdonation.connection.Connection;
+import coderdudos.printdonation.connection.ConnectionMessages;
+import coderdudos.printdonation.connection.ModelInformationRetriever;
 import coderdudos.printdonation.uielements.listviewadapters.ModelAdapter;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Observer{
+    ProgressDialog dialog;
+    ListView modelList;
+    ModelInformationRetriever modelInfo;
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ListView modelList = (ListView) findViewById(R.id.modelList);
-        modelList.setAdapter(new ModelAdapter(getLayoutInflater().getContext()));
+        dialog = new ProgressDialog(MainActivity.this);
+        dialog.setMessage("Loading, please wait");
+        dialog.setTitle("Connecting server");
+        dialog.setCancelable(false);
+        dialog.show();
+
+        Connection.getInstance().addObserver(this);
+
+        modelList = (ListView) findViewById(R.id.modelList);
+        modelList.setAdapter(new ModelAdapter(getLayoutInflater().getContext(), new ArrayList<ModelAdapter.ModelData>()));
         modelList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -36,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        this.context = getLayoutInflater().getContext();
     }
 
     @Override
@@ -78,5 +100,28 @@ public class MainActivity extends AppCompatActivity {
                 doubleBackToExitPressedOnce=false;
             }
         }, 2000);
+    }
+
+    private void startConnection(){
+        Connection.getInstance().addObserver(this);
+    }
+
+    @Override
+    public void update(Observable observable, final Object data) {
+        if(data.equals(ConnectionMessages.CONNECTED.toString())) {
+            Log.d("Connection", "Established!!");
+            modelInfo = new ModelInformationRetriever();
+            modelInfo.addObserver(this);
+            modelInfo.init();
+        }
+
+        if(ConnectionMessages.valueOf((String) data).equals(ConnectionMessages.MODELS_RECEIVED))
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    modelList.setAdapter(new ModelAdapter(context, modelInfo.getModelInfo()));
+                    dialog.cancel();
+                }
+            });
     }
 }
