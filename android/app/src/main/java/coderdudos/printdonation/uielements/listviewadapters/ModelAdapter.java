@@ -11,8 +11,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import coderdudos.printdonation.DownloadImage;
 import coderdudos.printdonation.R;
+import coderdudos.printdonation.connection.Connection;
+import coderdudos.printdonation.connection.StoredBmp;
 
 public class ModelAdapter extends BaseAdapter {
 
@@ -21,6 +22,7 @@ public class ModelAdapter extends BaseAdapter {
     private View row ;
 
     public static class ModelData{
+        private StoredBmp image;
         private int modelID;
         private String modelName;
 
@@ -30,6 +32,7 @@ public class ModelAdapter extends BaseAdapter {
             this.modelID = modelID;
             this.modelName = modelName;
             this.price = price;
+            this.image = new StoredBmp(null);
         }
 
 
@@ -57,6 +60,13 @@ public class ModelAdapter extends BaseAdapter {
             this.price = price;
         }
 
+        public StoredBmp getImage() {
+            return image;
+        }
+
+        public void setImage(StoredBmp image) {
+            this.image = image;
+        }
     }
 
     public ModelAdapter(Context context){
@@ -99,13 +109,12 @@ public class ModelAdapter extends BaseAdapter {
         ModelData modelData = this.data.get(position);
 
         ImageView image = (ImageView) row.findViewById(R.id.model_image);
-        //TODO alterar a interface
-        DownloadImage downloadImageTask = new DownloadImage() {
-            @Override
-            public void downloadImage(ImageView imagePlace, View view, String url) {
+        if(modelData.getImage().bmp != null){
+            image.setImageBitmap(modelData.getImage().bmp);
+        }else{
+            Connection.getInstance().downloadImage(image,row, modelData.getModelID(), modelData.getImage());
+        }
 
-            }
-        };
 
         TextView name = (TextView) row.findViewById(R.id.model_name);
         name.setText(modelData.getModelName());

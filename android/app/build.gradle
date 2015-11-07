@@ -28,7 +28,8 @@ dependencies {
     compile 'com.github.dbachelder:CreditCardEntry:1.4.7'
 }
 
-   repositories {
+allprojects {
+    repositories {
         maven { url "https://jitpack.io" }
     }
-
+}

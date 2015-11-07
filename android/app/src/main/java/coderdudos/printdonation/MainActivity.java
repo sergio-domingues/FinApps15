@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,15 +12,21 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.Observable;
+import java.util.Observer;
 
+import coderdudos.printdonation.connection.Connection;
+import coderdudos.printdonation.connection.ConnectionMessages;
 import coderdudos.printdonation.uielements.listviewadapters.ModelAdapter;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Observer{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Connection.getInstance().addObserver(this);
 
         ListView modelList = (ListView) findViewById(R.id.modelList);
         modelList.setAdapter(new ModelAdapter(getLayoutInflater().getContext()));
@@ -78,5 +85,18 @@ public class MainActivity extends AppCompatActivity {
                 doubleBackToExitPressedOnce=false;
             }
         }, 2000);
+    }
+
+    @Override
+    public void update(Observable observable, final Object data) {
+        if((ConnectionMessages.valueOf((String) data).equals(ConnectionMessages.CONNECTED))) {
+            Log.d("Update", "chegou ao update");
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getApplicationContext(), "Connected", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 }
