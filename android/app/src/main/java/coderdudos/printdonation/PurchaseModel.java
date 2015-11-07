@@ -1,5 +1,6 @@
 package coderdudos.printdonation;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +14,10 @@ import android.widget.Toast;
 
 import com.devmarvel.creditcardentry.library.CreditCard;
 import com.devmarvel.creditcardentry.library.CreditCardForm;
+
+import coderdudos.printdonation.connection.Connection;
+import coderdudos.printdonation.connection.request.PayRequest;
+import coderdudos.printdonation.connection.request.ResponsePayment;
 
 public class PurchaseModel extends AppCompatActivity {
 
@@ -50,11 +55,26 @@ public class PurchaseModel extends AppCompatActivity {
                 if (form.isCreditCardValid()) {
                     CreditCard card = form.getCreditCard();
                     Toast.makeText(getApplicationContext(), "Success!!!!", Toast.LENGTH_SHORT).show();
+                    makePayment(card);
                 } else {
                     Toast.makeText(getApplicationContext(), "Credit Card information no valid", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+    }
+
+    public void makePayment(final CreditCard card){
+        final Activity activity = this;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Connection.getInstance().send(new PayRequest(card.getCardNumber(),card.getExpDate() ,card.getSecurityCode()));
+
+                ResponsePayment response = (ResponsePayment) Connection.getInstance().read();
+                if(response.getDescription().equals((new ResponsePayment(" ")).getDescription()))
+                   activity.finish();
+            }
+        }).start();
     }
 
     @Override
