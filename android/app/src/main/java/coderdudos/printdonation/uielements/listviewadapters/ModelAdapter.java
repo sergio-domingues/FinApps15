@@ -63,7 +63,7 @@ public class ModelAdapter extends BaseAdapter {
         this.context = context;
         this.data = new ArrayList<>();
         for(int i = 0; i < 20; i++){
-            this.data.add(new ModelData(i,i+"",i*10));
+            this.data.add(new ModelData(i,i+1+"",i*10));
         }
     }
 
